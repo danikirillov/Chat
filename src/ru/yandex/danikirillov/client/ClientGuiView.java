@@ -1,9 +1,8 @@
 package ru.yandex.danikirillov.client;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ClientGuiView {
     private final ClientGuiController controller;
@@ -19,23 +18,50 @@ public class ClientGuiView {
     }
 
     private void initView() {
-        textField.setEditable(false);
-        messages.setEditable(false);
-        users.setEditable(false);
+        initTextField();
+        initMessages();
+        initUsers();
+        initFrame();
+    }
 
+    private void initTextField() {
+        textField.setEditable(false);
+        textField.setBackground(Color.BLACK);
+        textField.setForeground(Color.RED);
         frame.getContentPane().add(textField, BorderLayout.SOUTH);
-        frame.getContentPane().add(new JScrollPane(messages), BorderLayout.WEST);
-        frame.getContentPane().add(new JScrollPane(users), BorderLayout.EAST);
+
+        textField.addActionListener(e -> {
+            controller.sendTextMessage(textField.getText());
+            textField.setText("");
+        });
+    }
+
+    private void initMessages() {
+        messages.setEditable(false);
+        messages.setBackground(Color.BLACK);
+        messages.setForeground(Color.RED);
+        ((DefaultCaret)(messages.getCaret())).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        JScrollPane jScrollPane = new JScrollPane(messages);
+        jScrollPane.setBackground(Color.BLACK);
+        jScrollPane.setForeground(Color.DARK_GRAY);
+        frame.getContentPane().add(jScrollPane, BorderLayout.WEST);
+    }
+
+    private void initUsers() {
+        users.setEditable(false);
+        users.setBackground(Color.BLACK);
+        users.setForeground(Color.RED);
+        JScrollPane jScrollPane = new JScrollPane(users);
+        jScrollPane.setBackground(Color.BLACK);
+        jScrollPane.setForeground(Color.DARK_GRAY);
+        frame.getContentPane().add(jScrollPane, BorderLayout.EAST);
+    }
+
+    private void initFrame() {
+        frame.getContentPane().setBackground(new Color(35,33,28));
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
-        textField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.sendTextMessage(textField.getText());
-                textField.setText("");
-            }
-        });
     }
 
     public String getServerAddress() {
